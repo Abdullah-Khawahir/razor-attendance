@@ -3,3 +3,73 @@ dev.db
 bin/
 Properties/
 obj/
+
+## Build artifacts
+bin/
+obj/
+out/
+
+## SQLite database files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+## Rider
+.idea/
+*.sln.iml
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## VS Code
+.vscode/
+
+## ASP.NET Secrets
+**/secrets.json
+
+## .NET User-specific files
+*.dotCover
+*.ncrunch*
+*.localhistory/
+*.resharper
+*.sln.docstates
+
+## Logs
+*.log
+
+## npm / node (if used for frontend)
+node_modules/
+dist/
+
+## MacOS / Linux
+.DS_Store
+*.swp
+*.lock
+
+## Environment files
+.env
+.env.*
+
+## Publish
+publish/
+wwwroot/dist/
+wwwroot/build/
+
+## Coverage and test results
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.testresults
+
+## Others
+_ReSharper*/
+*.tmproj
+*.tscache
+*.vscode/*
+*.cache
