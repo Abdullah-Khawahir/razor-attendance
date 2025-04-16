@@ -2,8 +2,8 @@ namespace razor.Services;
 
 public class AttendanceService
 {
-    private static readonly TimeSpan LATE_ATTENDANCE_TIME = new TimeSpan(8, 30, 0);
-    private static readonly TimeSpan EARLY_ATTENDANCE_TIME = new TimeSpan(15, 30, 0);
+    private static readonly TimeSpan LATE_ATTENDANCE_TIME = new(8, 30, 0);
+    private static readonly TimeSpan EARLY_ATTENDANCE_TIME = new(15, 30, 0);
 
     private readonly DatabaseContext _db;
 
@@ -60,13 +60,7 @@ public class AttendanceService
         var today = DateTime.Today;
 
         var attendance = await _db.Attendances
-            .FirstOrDefaultAsync(a => a.UserId == userId && a.Date == today);
-
-        if (attendance == null)
-        {
-            throw new Exception("No check-in record found for today.");
-        }
-
+            .FirstOrDefaultAsync(a => a.UserId == userId && a.Date == today) ?? throw new Exception("No check-in record found for today.");
         if (attendance.CheckOutTime != null)
         {
             throw new Exception("Already checked out today.");
@@ -79,12 +73,13 @@ public class AttendanceService
         await _db.SaveChangesAsync();
     }
 
-    public async Task<double> CalculateWeeklyHoursAsync(Guid userId, DateTime weekStart)
+    public async Task<double> CalculateWeeklyHoursAsync(Guid userId, DateTime? weekStart)
     {
-        var weekEnd = weekStart.AddDays(7);
+        var startOfWeek = weekStart ?? DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+        var endOfWeek = startOfWeek.AddDays(7);
 
         var weeklyAttendances = await _db.Attendances
-            .Where(a => a.UserId == userId && a.Date >= weekStart && a.Date < weekEnd)
+            .Where(a => a.UserId == userId && a.Date >= weekStart && a.Date < endOfWeek)
             .ToListAsync();
 
         return weeklyAttendances
@@ -92,9 +87,4 @@ public class AttendanceService
             .Sum(a => (a.CheckOutTime.Value - a.CheckInTime.Value).TotalHours);
     }
 
-    public void EmailNotification(string message)
-    {
-        // Mock for now — replace with real email service
-        Console.WriteLine($"Email Notification: {message}");
-    }
 }

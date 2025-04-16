@@ -1,3 +1,7 @@
+.placeholder-center::placeholder {
+    text-align: center;
+}
+
 html {
   font-size: 14px;
 }

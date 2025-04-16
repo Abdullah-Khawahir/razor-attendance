@@ -5,7 +5,8 @@ builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogL
 // Configure DbContext
 var env = builder.Environment;
 var services = builder.Services;
-services.AddScoped<AttendanceService, AttendanceService>();
+services.AddScoped<AttendanceService, AttendanceService>()
+        .AddScoped<MailNotificationService, MailNotificationService>();
 if (env.IsDevelopment())
 {
     services.AddDbContext<DatabaseContext>(options =>
@@ -28,6 +29,8 @@ services.AddIdentity<User, IdentityRole<Guid>>(options =>
 // Add Razor Pages
 services.AddRazorPages();
 
+services.AddSession();
+
 var app = builder.Build();
 
 // Middleware
@@ -44,7 +47,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 app.MapRazorPages();
 
 app.Run();

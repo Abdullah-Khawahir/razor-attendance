@@ -1,0 +1,29 @@
+@page
+@model razor.Pages.DashboardModel
+@{
+ViewData["Title"] = "Admin Dashboard";
+}
+
+<h4>
+    Admin Dashboard
+</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Email</td>
+            <td>Roles</td>
+            <td>Roles</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in @Model.Users)
+        {
+        <tr>
+            <td><a href="/Admin/UserDetails/@user.User.Id">@user.User.FullName</a></td>
+            <td>@user.User.Email</td>
+            <td>@String.Join(", " , @user.Roles) </td>
+        </tr>
+        }
+    </tbody>
+</table>

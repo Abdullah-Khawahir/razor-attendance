@@ -1,0 +1,7 @@
+@page "{id:guid}"
+@model UserDetailsModel
+
+<p>@Model.User.FullName</p>
+
+<a asp-page="/Admin/UserDetails" asp-route-id="@Model.User.Id">View Details</a>
+

@@ -2,14 +2,15 @@
 @model razor.Pages.AttendanceModel
 @using razor.Entities
 @{
-    ViewData["Title"] = "Attendance";
+ViewData["Title"] = "Attendance";
 }
 
-<h2 class="text-center" >Attendance</h2>
+<h2 class="text-center">Attendance</h2>
 
 <form method="post" class="d-flex justify-content-around">
-    <button  class="btn btn-primary w-25" type="submit" formaction="?handler=CheckIn" >Check In</button>
-    <button  class="btn btn-danger w-25" type="submit" formaction="?handler=CheckOut" >Check Out</button>
+    <button class="btn btn-primary w-25" type="submit" formaction="?handler=CheckIn">Check In</button>
+    <input asp-for="Note" class="shadow w-25 px-1 border rounded placeholder-center" placeholder="Note" />
+    <button class="btn btn-danger w-25" type="submit" formaction="?handler=CheckOut">Check Out</button>
 </form>
 
 <table class="table mt-4">
@@ -20,18 +21,23 @@
             <th>Check Out</th>
             <th>Late?</th>
             <th>Early Leave?</th>
+            <th>Check In Note</th>
+            <th>Check Out Note</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var attendance in Model.UserAttendance)
         {
-            <tr>
-                <td>@attendance.Date.ToShortDateString()</td>
-                <td>@attendance.CheckInTime?.ToString("HH:mm")</td>
-                <td>@attendance.CheckOutTime?.ToString("HH:mm")</td>
-                <td>@(attendance.IsLate ? "Yes" : "No")</td>
-                <td>@(attendance.IsEarlyLeave ? "Yes" : "No")</td>
-            </tr>
+        <tr>
+            <td>@attendance.Date.ToShortDateString()</td>
+            <td>@attendance.CheckInTime?.ToString("HH:mm")</td>
+            <td>@attendance.CheckOutTime?.ToString("HH:mm")</td>
+            <td>@(attendance.IsLate ? "Yes" : "No")</td>
+            <td>@(attendance.IsEarlyLeave ? "Yes" : "No")</td>
+
+            <td>@(attendance.CheckInNote ?? "-")</td>
+            <td>@(attendance.CheckOutNote ?? "-")</td>
+        </tr>
         }
     </tbody>
 </table>

@@ -6,3 +6,4 @@ global using Microsoft.EntityFrameworkCore;
 global using razor.Database;
 global using razor.Entities;
 global using razor.Services;
+global using System.Threading.Tasks;

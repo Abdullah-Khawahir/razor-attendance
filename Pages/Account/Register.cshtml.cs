@@ -33,25 +33,38 @@ public class RegisterModel : PageModel
 
         if (result.Succeeded)
         {
-            _logger.LogInformation("New User Register  - Email: {Email}, FullName: {FullName} , Role: User", user.Email, user.FullName);
-
-            const string roleName = "User";
-
-            if (!await _roleManager.RoleExistsAsync(roleName))
+            if (_userManager.Users.Count() == 1)
             {
-                await _roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+                _logger.LogInformation("New Admin Register  - Email: {Email}, FullName: {FullName} , Role: User", user.Email, user.FullName);
+                var adminRole = "Admin";
+                if (!await _roleManager.RoleExistsAsync(adminRole))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole<Guid>(adminRole));
+                }
+                result = await _userManager.AddToRoleAsync(user, "Admin");
             }
-            result = await _userManager.AddToRoleAsync(user, roleName);
+            else
+            {
+                _logger.LogInformation("New User Register  - Email: {Email}, FullName: {FullName} , Role: User", user.Email, user.FullName);
+                var userRole = "User";
+                if (!await _roleManager.RoleExistsAsync(userRole))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole<Guid>(userRole));
+                }
+                result = await _userManager.AddToRoleAsync(user, userRole);
+            }
+
         }
 
-        if (result.Errors.Any() )
+        if (result.Errors.Any())
         {
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+            return Page();
         }
-        return Page();
+        else return RedirectToPage("/Account/Login");
     }
 
     public class RegisterFormModel

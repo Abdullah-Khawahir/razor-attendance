@@ -7,7 +7,8 @@ public class AttendanceModel : PageModel
 {
     [BindProperty]
     public List<Attendance> UserAttendance { get; set; } = new();
-
+    [BindProperty]
+    public string? Note { get; set; } = null;
     private readonly ILogger<AttendanceModel> _logger;
     private readonly AttendanceService _service;
     private readonly UserManager<User> _userManager;
@@ -46,7 +47,7 @@ public class AttendanceModel : PageModel
 
         try
         {
-            await _service.CheckInAsync(user.Id, DateTime.Now);
+            await _service.CheckInAsync(user.Id, DateTime.Now , Note);
             _logger.LogInformation("User {UserId} checked in at {Time}", user.Id, DateTime.Now);
         }
         catch (Exception ex)
@@ -68,7 +69,7 @@ public class AttendanceModel : PageModel
 
         try
         {
-            await _service.CheckOutAsync(user.Id, DateTime.Now);
+            await _service.CheckOutAsync(user.Id, DateTime.Now, Note);
             _logger.LogInformation("User {UserId} checked out at {Time}", user.Id, DateTime.Now);
         }
         catch (Exception ex)
