@@ -13,7 +13,7 @@ ViewData["Title"] = "Admin Dashboard";
             <td>Name</td>
             <td>Email</td>
             <td>Roles</td>
-            <td>Roles</td>
+            <td>Toggle Admin</td>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +23,13 @@ ViewData["Title"] = "Admin Dashboard";
             <td><a href="/Admin/UserDetails/@user.User.Id">@user.User.FullName</a></td>
             <td>@user.User.Email</td>
             <td>@String.Join(", " , @user.Roles) </td>
+            <td>
+                <form method="post">
+                    <button formaction="?handler=AdminToggle&userId=@user.User.Id" type="submit">
+                        @(user.isAdmin ? "Set Normal User" : "Set Admin")
+                    </button>
+                </form>
+            </td>
         </tr>
         }
     </tbody>
