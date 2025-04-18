@@ -7,7 +7,7 @@ public class RegisterModel : PageModel
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
     [BindProperty]
-    public required AddUserForm Input { get; set; }
+    public required RegisterFormModel Input { get; set; }
 
     public RegisterModel(ILogger<RegisterModel> logger, UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager)
     {
@@ -72,7 +72,7 @@ public class RegisterModel : PageModel
         else return RedirectToPage("/Admin/Dashboard");
     }
 
-    public class AddUserForm
+    public class RegisterFormModel
     {
         public required string Email { get; set; }
         public required string FullName { get; set; }
