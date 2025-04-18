@@ -14,6 +14,19 @@ ViewData["Title"] = "Admin Dashboard";
             <td>Email</td>
             <td>Roles</td>
             <td>Toggle Admin</td>
+            <td></td>
+            <td></td>
+
+            <td>
+                <form method="get">
+                    <button formaction="/Admin/Users/AddUser" type="submit"
+                        class="btn btn-success rounded-75 "
+                        >
+                        +
+                    </button>
+                </form>
+            </td>
+
         </tr>
     </thead>
     <tbody>
@@ -25,8 +38,25 @@ ViewData["Title"] = "Admin Dashboard";
             <td>@String.Join(", " , @user.Roles) </td>
             <td>
                 <form method="post">
-                    <button formaction="?handler=AdminToggle&userId=@user.User.Id" type="submit">
-                        @(user.isAdmin ? "Set Normal User" : "Set Admin")
+                    <button formaction="?handler=AdminToggle&userId=@user.User.Id" type="submit"
+                        class="btn @(user.isAdmin ? " btn-primary" : "btn-info" ) "
+                    >
+                        @(user.isAdmin ? " Set Normal User" : "Set Admin" ) </button>
+                </form>
+            </td>
+
+            <td>
+                <form method="get">
+                    <button class="btn btn-warning" formaction="/Admin/Users/EditUser/@user.User.Id" type="submit">
+                        Edit
+                    </button>
+                </form>
+            </td>
+
+            <td>
+                <form method="post">
+                    <button class="btn btn-danger" formaction="?handler=DeleteUser&userId=@user.User.Id" type="submit">
+                        Delete
                     </button>
                 </form>
             </td>

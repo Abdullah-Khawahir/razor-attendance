@@ -13,12 +13,14 @@ public class DashboardModel : PageModel
     private readonly UserManager<User> _userManager;
     private readonly ILogger<MailNotificationService> _logger;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+    private readonly MailNotificationService _mail;
 
-    public DashboardModel(UserManager<User> userManager, ILogger<MailNotificationService> logger, RoleManager<IdentityRole<Guid>> roleManager)
+    public DashboardModel(UserManager<User> userManager, ILogger<MailNotificationService> logger, RoleManager<IdentityRole<Guid>> roleManager, MailNotificationService mail)
     {
         _userManager = userManager;
         _logger = logger;
         _roleManager = roleManager;
+        _mail = mail;
     }
 
     public async Task<IActionResult> OnGet()
@@ -63,6 +65,31 @@ public class DashboardModel : PageModel
         }
 
         return RedirectToPage();
+    }
+    public async Task<IActionResult> OnPostDeleteUserAsync(string userId)
+    {
+        _logger.LogInformation($"attempt to delete user by Id {userId}");
+        if (!Guid.TryParse(userId, out var guidUserId))
+        {
+            return RedirectToPage();
+        }
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == guidUserId);
+        if (user == null)
+        {
+            return RedirectToPage();
+        }
+        _mail.notifyUser(user, $"your account has been deleted");
+        _logger.LogInformation($"deleted the user {user.FullName} with the email : {user.Email}");
+
+        var result = await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            _logger.LogError("delete faild: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
+            return Page();
+        }
+
+        return RedirectToPage();
+
     }
 
     public class UserWithRoleModel
