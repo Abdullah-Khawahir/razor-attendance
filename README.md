@@ -1,40 +1,120 @@
 # Razor Attendance System
 
-A web-based attendance management system built with ASP.NET Core Razor Pages. This application allows administrators to manage employee attendance efficiently, with configurable early and late attendance thresholds.
+A web-based attendance management system built with ASP.NET Core Razor Pages. It utilizes Entity Framework Core for data access, employing SQLite in the development environment and MySQL in production. The system allows configuration of early and late attendance times to suit organizational policies.
 
-## 📝 Overview
+## 📋 Features
 
-The Razor Attendance System enables:
+- **User Authentication**: Secure login for administrators and users.
+- **Attendance Tracking**: Record and monitor attendance with time-based validations.
+- **Configurable Settings**: Define early and late attendance thresholds.
+- **Responsive UI**: User-friendly interface built with Razor Pages.
 
-- **Employee Management**: Add, update, and delete employee records.
-- **Attendance Tracking**: Record and monitor daily attendance.
-- **Configurable Settings**: Define early and late attendance times via configuration.
+## 🛠️ Technologies Used
 
-## ⚙️ Technologies Used
-
-- **Frontend**: Razor Pages, HTML, CSS
+- **Frontend**: Razor Pages (ASP.NET Core)
 - **Backend**: ASP.NET Core
 - **ORM**: Entity Framework Core
 - **Database**:
-  - **Development**: SQLite
-  - **Production**: MySQL
+  - Development: SQLite
+  - Production: MySQL
 
-## 📂 Project Structure
+## 🚀 Getting Started
 
-- `Entities/`: Contains the data models.
-- `Pages/`: Razor Pages for UI.
-- `Services/`: Business logic and data access.
-- `Database/`: Database context and migrations.
-- `wwwroot/`: Static files (CSS, JS, images).
+### Prerequisites
 
-## 🔧 Configuration
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download)
+- [SQLite](https://www.sqlite.org/download.html) (for development)
+- [MySQL Server](https://dev.mysql.com/downloads/mysql/) (for production)
 
-### Attendance Settings
+### Installation
 
-Configure early and late attendance times in `appsettings.json` the defualt is what in the json:
+1. **Clone the Repository**
+
+```bash
+git clone https://github.com/Abdullah-Khawahir/razor-attendance.git
+cd razor-attendance
+```
+
+2. **Configure the Application**
+
+Update the `appsettings.Development.json` for development:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=attendance_dev.db"
+  },
+    "Attendance": {
+      "EarlyAttendanceTime": "15:30:00",
+      "LateAttendanceTime": "08:30:00"
+    }
+}
+```
+
+For production, update `appsettings.Production.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=your-mysql-host;Database=attendance_db;User=youruser;Password=yourpassword;"
+  },
+    "Attendance": {
+      "EarlyAttendanceTime": "15:30:00",
+      "LateAttendanceTime": "08:30:00"
+    }
+}
+```
+
+3. **Apply Migrations and Create the Database**
+
+- **Development (SQLite)**:
+
+```bash
+dotnet ef database update --environment Development
+```
+
+- **Production (MySQL)**:
+
+```bash
+dotnet ef database update --environment Production
+```
+
+4. **Run the Application**
+
+- **Development**:
+
+```bash
+dotnet watch # or run
+```
+
+- **Production**:
+
+```bash
+dotnet run --environment "Production"
+```
+
+The application will be accessible at `http://localhost:5000` by default.
+
+## ⚙️ Configuration
+
+The application uses the following configuration for attendance timings:
 
 ```json
 "Attendance": {
   "EarlyAttendanceTime": "15:30:00",
-  "LateAttendanceTime": "08:30:00"
+    "LateAttendanceTime": "08:30:00"
 }
+```
+
+These settings determine the thresholds for early and late attendance and can be adjusted in the respective `appsettings.{Environment}.json` files.
+
+## 📁 Project Structure
+
+- `Entities/`: Contains the Entity Framework Core entity classes.
+- `Pages/`: Razor Pages for the application's UI.
+- `Services/`: Business logic and service classes.
+- `Database/`: Database context and migration files.
+- `wwwroot/`: Static files (CSS, JS, images).
+- `Program.cs`: Entry point and application configuration.
+- `appsettings.{Environment}.json`: Environment-specific configuration files.
+
