@@ -14,14 +14,17 @@ public class UserDetailsModel : PageModel
     public Guid Id { get; set; }
     [BindProperty]
     public User User { get; set; }
-    // public List<Attendance> UserAttendance = new();
+    public double weeklyHours = -1;
     public async Task<IActionResult> OnGet(Guid id)
     {
         Id = id;
         User = await _userManager.Users
             .Include(u => u.AttendanceRecords)
             .FirstOrDefaultAsync(u => u.Id == id);
-
+        if (User != null)
+        {
+            weeklyHours = await _attendance.CalculateWeeklyHoursAsync(User.Id, DateTime.Today);
+        }
         return User == null ? NotFound() : Page();
     }
 }
