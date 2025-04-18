@@ -6,7 +6,19 @@ ViewData["Title"] = "Attendance";
 }
 
 <h2 class="text-center">Attendance</h2>
-
+<div>
+    @if (Model.Errors.Any())
+    {
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in Model.Errors)
+            {
+            <li>@error</li>
+            }
+        </ul>
+    </div>
+    }
+</div>
 <form method="post" class="d-flex justify-content-around">
     <button class="btn btn-primary w-25" type="submit" formaction="?handler=CheckIn">Check In</button>
     <input asp-for="Note" class="shadow w-25 px-1 border rounded placeholder-center" placeholder="Note" />

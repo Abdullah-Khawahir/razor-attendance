@@ -1,0 +1,29 @@
+﻿@page
+@model AddUserModel
+@{
+}
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label>Email</label>
+        <input asp-for="Input.Email" type="text" value="" class="form-control shadow-sm rounded" />
+    </div>
+
+    <div class="mb-3">
+        <label>Full Name</label>
+        <input asp-for="Input.FullName" type="text" value="" class="form-control shadow-sm rounded" />
+    </div>
+
+    <div class="mb-3">
+        <label>Password</label>
+        <input asp-for="Input.Password" type="password" value="" class="form-control shadow-sm rounded" />
+    </div>
+
+    <div class="mb-3">
+        <label>Re-enter Password</label>
+        <input asp-for="Input.ConfirmPassword" type="password" value="" class="form-control shadow-sm rounded" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

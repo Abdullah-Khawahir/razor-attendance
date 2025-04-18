@@ -6,10 +6,12 @@ public class AttendanceService
     private static readonly TimeSpan EARLY_ATTENDANCE_TIME = new(15, 30, 0);
 
     private readonly DatabaseContext _db;
+    private readonly MailNotificationService _mail;
 
-    public AttendanceService(DatabaseContext dbContext)
+    public AttendanceService(DatabaseContext dbContext, MailNotificationService mail)
     {
         _db = dbContext;
+        _mail = mail;
     }
 
     public async Task<List<Attendance>> GetUserAttendanceAsync(Guid userId)
@@ -24,28 +26,35 @@ public class AttendanceService
     {
         var today = DateTime.Today;
 
-        var attendance = await _db.Attendances
+        var todayAttendance = await _db.Attendances
             .FirstOrDefaultAsync(a => a.UserId == userId && a.Date == today);
 
-        if (attendance == null)
+        if (todayAttendance == null)
         {
-            attendance = new Attendance
+            var isLate = checkInTime.TimeOfDay > LATE_ATTENDANCE_TIME;
+
+            todayAttendance = new Attendance
             {
                 UserId = userId,
                 Date = today,
                 CheckInTime = checkInTime,
                 CheckInNote = note,
-                IsLate = checkInTime.TimeOfDay > LATE_ATTENDANCE_TIME,
+                IsLate = isLate,
                 User = await _db.Users.FirstAsync(u => u.Id == userId)
             };
 
-            await _db.Attendances.AddAsync(attendance);
+            await _db.Attendances.AddAsync(todayAttendance);
+            await _mail.notifyUserById(userId,
+                    isLate ?
+                    $"your check in is late for {today} at {checkInTime.TimeOfDay}" :
+                    $"your check in is on time for {today} at {checkInTime.TimeOfDay}"
+                    );
         }
-        else if (attendance.CheckInTime == null)
+        else if (todayAttendance.CheckInTime == null)
         {
-            attendance.CheckInTime = checkInTime;
-            attendance.CheckInNote = note;
-            attendance.IsLate = checkInTime.TimeOfDay > LATE_ATTENDANCE_TIME;
+            todayAttendance.CheckInTime = checkInTime;
+            todayAttendance.CheckInNote = note;
+            todayAttendance.IsLate = checkInTime.TimeOfDay > LATE_ATTENDANCE_TIME;
         }
         else
         {
@@ -70,6 +79,11 @@ public class AttendanceService
         attendance.CheckOutNote = note;
         attendance.IsEarlyLeave = checkOutTime.TimeOfDay < EARLY_ATTENDANCE_TIME;
 
+        await _mail.notifyUserById(userId,
+                attendance.IsEarlyLeave ?
+                $"your check out is early for {today} at {checkOutTime.TimeOfDay}" :
+                $"your check out is on time for {today} at {checkOutTime.TimeOfDay}"
+                );
         await _db.SaveChangesAsync();
     }
 
