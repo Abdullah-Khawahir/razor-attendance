@@ -2,8 +2,8 @@ namespace razor.Services;
 
 public class AttendanceService
 {
-    private static readonly TimeSpan LATE_ATTENDANCE_TIME = new(8, 30, 0);
-    private static readonly TimeSpan EARLY_ATTENDANCE_TIME = new(15, 30, 0);
+    private static readonly TimeSpan EARLY_ATTENDANCE_TIME = Config.Env("Attendance:EarlyAttendanceTime", new TimeSpan(15, 30, 0));
+    private static readonly TimeSpan LATE_ATTENDANCE_TIME = Config.Env("Attendance:LateAttendanceTime", new TimeSpan(8, 30, 0));
 
     private readonly DatabaseContext _db;
     private readonly MailNotificationService _mail;

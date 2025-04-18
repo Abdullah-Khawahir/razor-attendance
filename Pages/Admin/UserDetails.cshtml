@@ -1,7 +1,39 @@
 @page "{id:guid}"
 @model UserDetailsModel
 
-<p>@Model.User.FullName</p>
+<div>
+    <p>Name: @Model.User.FullName</p>
+    <p>Email: @Model.User.Email</p>
+    <p>Created At: @Model.User.CreatedAt</p>
+</div>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Late?</th>
+            <th>Early Leave?</th>
+            <th>Check In Note</th>
+            <th>Check Out Note</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var attendance in Model.User.AttendanceRecords)
+        {
+        <tr>
+            <td>@attendance.Date.ToShortDateString()</td>
+            <td>@attendance.CheckInTime?.ToString("HH:mm")</td>
+            <td>@attendance.CheckOutTime?.ToString("HH:mm")</td>
+            <td>@(attendance.IsLate ? "Yes" : "No")</td>
+            <td>@(attendance.IsEarlyLeave ? "Yes" : "No")</td>
+
+            <td>@(attendance.CheckInNote ?? "-")</td>
+            <td>@(attendance.CheckOutNote ?? "-")</td>
+        </tr>
+        }
+    </tbody>
+</table>
 
 <a asp-page="/Admin/UserDetails" asp-route-id="@Model.User.Id">View Details</a>
-
