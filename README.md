@@ -124,3 +124,6 @@ These settings determine the thresholds for early and late attendance and can be
 
 # Database Entity Relationship Diagram
 ![Project ERD svg](./erd.svg)
+
+# Architecture diagram
+![Architecture diagram svg](./arch_diagram.svg)
