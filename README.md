@@ -118,6 +118,9 @@ These settings determine the thresholds for early and late attendance and can be
 - `Program.cs`: Entry point and application configuration.
 - `appsettings.{Environment}.json`: Environment-specific configuration files.
 
-## 📊 Project Digram
-
+## 📊 Project Digrams
+### Class Digram
 ![Project UML svg](./uml.svg)
+
+# Database Entity Relationship Diagram
+![Project ERD svg](./erd.svg)
