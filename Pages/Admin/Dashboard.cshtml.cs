@@ -7,8 +7,6 @@ namespace razor.Pages;
 public class DashboardModel : PageModel
 {
     [BindProperty]
-    public int counter { get; set; }
-    [BindProperty]
     public List<UserWithRoleModel> Users { get; set; } = [];
     private readonly UserManager<User> _userManager;
     private readonly ILogger<MailNotificationService> _logger;
