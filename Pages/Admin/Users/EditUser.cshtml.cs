@@ -1,60 +1,60 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+namespace razor.Pages;
 
-namespace razor.Pages
+public class EditUserModel(ILogger<EditUserModel> logger, UserManager<User> userManager) : PageModel
 {
-    public class EditUserModel : PageModel
+    private readonly ILogger<EditUserModel> _logger = logger;
+    private readonly UserManager<User> _userManager = userManager;
+    [BindProperty(SupportsGet = true)]
+    public Guid UserId { get; set; }
+    [BindProperty]
+    public required User AppUser { get; set; }
+    [BindProperty]
+    public required InputModel Input { get; set; }
+
+    public async Task<IActionResult> OnGet(string userId)
     {
-        private readonly ILogger<EditUserModel> _logger;
-        private readonly UserManager<User> _userManager;
-        [BindProperty(SupportsGet = true)]
-        public Guid UserId { get; set; }
-        [BindProperty]
-        public User User { get; set; }
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        public EditUserModel(ILogger<EditUserModel> logger, UserManager<User> userManager)
+        _logger.LogInformation("editing user of Id : {ID}", userId);
+        User? user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
         {
-            _logger = logger;
-            _userManager = userManager;
+            return NotFound();
+        }
+        AppUser = user;
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPost()
+    {
+        User? user = await _userManager.FindByIdAsync(UserId.ToString());
+        if (user == null)
+        {
+            return NotFound();
+        }
+        AppUser = user;
+
+        if (AppUser == null)
+        {
+            return RedirectToPage("Admin/Dashboard");
         }
 
+        if (!String.IsNullOrWhiteSpace(Input.Email)) AppUser.Email = Input.Email;
+        if (!String.IsNullOrWhiteSpace(Input.FullName)) AppUser.FullName = Input.FullName;
+        if (!String.IsNullOrWhiteSpace(Input.Password)) AppUser.PasswordHash = new PasswordHasher<User>().HashPassword(AppUser, Input.Password);
 
-        public async Task<IActionResult> OnGet(string userId)
-        {
-            _logger.LogInformation("editing user of Id : {ID}", userId);
-            User = await _userManager.FindByIdAsync(userId.ToString());
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPost()
-        {
-            User = await _userManager.FindByIdAsync(UserId.ToString());
-            if (User == null)
-            {
-                return RedirectToPage("Admin/Dashboard");
-            }
-
-            if (!String.IsNullOrWhiteSpace(Input.Email)) User.Email = Input.Email;
-            if (!String.IsNullOrWhiteSpace(Input.FullName)) User.FullName = Input.FullName;
-
-            _logger.LogInformation(
-                "Edited user of Id : {ID} , name: FROM {FullName} TO {NewFullName} , Email: FROM {Email} TO {NewEmail}",
-                UserId,
-                User?.FullName, Input.FullName,
-                User?.Email, Input.Email
-            );
-            return RedirectToPage("/Admin/Dashboard");
-        }
+        _logger.LogInformation(
+            "Edited user of Id : {ID} , name: FROM {FullName} TO {NewFullName} , Email: FROM {Email} TO {NewEmail}",
+            UserId,
+            AppUser?.FullName, Input.FullName,
+            AppUser?.Email, Input.Email
+        );
+        return RedirectToPage("/Admin/Dashboard");
+    }
 
 
-        public class InputModel
-        {
-            public string Email { get; set; }
-            public string FullName { get; set; }
-            public string Password { get; set; }
-        }
+    public class InputModel
+    {
+        public required string Email { get; set; }
+        public required string FullName { get; set; }
+        public required string Password { get; set; }
     }
 }

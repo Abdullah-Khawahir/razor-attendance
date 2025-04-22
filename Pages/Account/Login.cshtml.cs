@@ -1,12 +1,7 @@
 
-public class LoginModel : PageModel
+public class LoginModel(SignInManager<User> signInManager) : PageModel
 {
-    private readonly SignInManager<User> _signInManager;
-
-    public LoginModel(SignInManager<User> signInManager)
-    {
-        _signInManager = signInManager;
-    }
+    private readonly SignInManager<User> _signInManager = signInManager;
 
     [BindProperty]
     public required InputModel Input { get; set; }

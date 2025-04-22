@@ -1,20 +1,13 @@
 namespace razor.Pages;
 
-public class AddUserModel : PageModel
+public class AddUserModel(ILogger<RegisterModel> logger, UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager) : PageModel
 {
-    private readonly ILogger<RegisterModel> _logger;
-    private readonly UserManager<User> _userManager;
-    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+    private readonly ILogger<RegisterModel> _logger = logger;
+    private readonly UserManager<User> _userManager = userManager;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager = roleManager;
 
     [BindProperty]
     public required RegisterFormModel Input { get; set; }
-
-    public AddUserModel(ILogger<RegisterModel> logger, UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager)
-    {
-        _logger = logger;
-        _roleManager = roleManager;
-        _userManager = userManager;
-    }
 
     public IActionResult OnGet()
     {
@@ -69,7 +62,10 @@ public class AddUserModel : PageModel
             }
             return Page();
         }
-        else return RedirectToPage("/Admin/Dashboard");
+        else
+        {
+            return RedirectToPage("/Admin/Dashboard");
+        }
     }
 
     public class RegisterFormModel

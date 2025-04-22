@@ -1,25 +1,21 @@
-using Microsoft.AspNetCore.Authorization;
-
 namespace razor.Pages;
-[Authorize]
-public class UserDetailsModel(UserManager<User> userManager, AttendanceService attendance) : PageModel
+
+public class ProfileModel(UserManager<User> userManager, AttendanceService attendance) : PageModel
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly AttendanceService _attendance = attendance;
 
-    public UserDetailsPageModel UserDetails { get; set; }
+    public ProfilePageModel UserDetails { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid id)
+    public async Task<IActionResult> OnGet()
     {
-        if (id == null)
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser == null)
         {
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null)
-            {
-                return NotFound();
-            }
-            id = currentUser.Id;
+            return NotFound();
         }
+        var id = currentUser.Id;
+
         UserDetails = new();
         User? user = await _userManager.Users
             .Include(u => u.AttendanceRecords)
@@ -45,7 +41,7 @@ public class UserDetailsModel(UserManager<User> userManager, AttendanceService a
         return UserDetails.User == null ? NotFound() : Page();
     }
 
-    public class UserDetailsPageModel
+    public class ProfilePageModel
     {
         [BindProperty]
         public User User { get; set; }

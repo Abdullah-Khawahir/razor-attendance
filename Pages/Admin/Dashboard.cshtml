@@ -39,9 +39,9 @@ ViewData["Title"] = "Admin Dashboard";
             <td>
                 <form method="post">
                     <button formaction="?handler=AdminToggle&userId=@user.User.Id" type="submit"
-                        class="btn @(user.isAdmin ? " btn-primary" : "btn-info" ) "
+                        class="btn @(user.IsAdmin ? " btn-primary" : "btn-info" ) "
                     >
-                        @(user.isAdmin ? " Set Normal User" : "Set Admin" ) </button>
+                        @(user.IsAdmin ? " Set Normal User" : "Set Admin" ) </button>
                 </form>
             </td>
 

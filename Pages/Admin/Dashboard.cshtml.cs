@@ -1,25 +1,16 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
 namespace razor.Pages;
 
 [Authorize(Roles = "Admin")]
-public class DashboardModel : PageModel
+public class DashboardModel(UserManager<User> userManager, ILogger<MailNotificationService> logger, RoleManager<IdentityRole<Guid>> roleManager, MailNotificationService mail) : PageModel
 {
     [BindProperty]
     public List<UserWithRoleModel> Users { get; set; } = [];
-    private readonly UserManager<User> _userManager;
-    private readonly ILogger<MailNotificationService> _logger;
-    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private readonly MailNotificationService _mail;
-
-    public DashboardModel(UserManager<User> userManager, ILogger<MailNotificationService> logger, RoleManager<IdentityRole<Guid>> roleManager, MailNotificationService mail)
-    {
-        _userManager = userManager;
-        _logger = logger;
-        _roleManager = roleManager;
-        _mail = mail;
-    }
+    private readonly UserManager<User> _userManager = userManager;
+    private readonly ILogger<MailNotificationService> _logger = logger;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager = roleManager;
+    private readonly MailNotificationService _mail = mail;
 
     public async Task<IActionResult> OnGet()
     {
@@ -55,7 +46,7 @@ public class DashboardModel : PageModel
         }
         else
         {
-            if (!(await _roleManager.RoleExistsAsync("Admin")))
+            if (!await _roleManager.RoleExistsAsync("Admin"))
             {
                 await _roleManager.CreateAsync(new IdentityRole<Guid>("Admin"));
             }
@@ -95,6 +86,6 @@ public class DashboardModel : PageModel
 
         public required User User { get; set; }
         public required List<string> Roles { get; set; } = [];
-        public bool isAdmin => Roles.Contains("Admin");
+        public bool IsAdmin => Roles.Contains("Admin");
     }
 }

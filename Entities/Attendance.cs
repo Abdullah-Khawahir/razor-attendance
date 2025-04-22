@@ -20,5 +20,5 @@ public class Attendance
     public DateTime Date { get; set; }
 
 
-    public User User { get; set; }
+    public required User User { get; set; }
 }

@@ -3,29 +3,21 @@ using Microsoft.AspNetCore.Authorization;
 namespace razor.Pages;
 
 [Authorize]
-public class AttendanceModel : PageModel
+public class AttendanceModel(
+    ILogger<AttendanceModel> logger,
+    AttendanceService service,
+    UserManager<User> userManager) : PageModel
 {
     [BindProperty]
-    public List<Attendance> UserAttendance { get; set; } = new();
+    public List<Attendance> UserAttendance { get; set; } = [];
     [BindProperty]
     public string? Note { get; set; } = null;
 
     [BindProperty]
-    public List<String> Errors { get; set; } = new();
-    private readonly ILogger<AttendanceModel> _logger;
-    private readonly AttendanceService _service;
-    private readonly UserManager<User> _userManager;
-
-    public AttendanceModel(
-        ILogger<AttendanceModel> logger,
-        AttendanceService service,
-        UserManager<User> userManager)
-    {
-        _logger = logger;
-        _service = service;
-        _userManager = userManager;
-    }
-
+    public List<string> Errors { get; set; } = [];
+    private readonly ILogger<AttendanceModel> _logger = logger;
+    private readonly AttendanceService _service = service;
+    private readonly UserManager<User> _userManager = userManager;
     public async Task<IActionResult> OnGet()
     {
         Errors.Clear();

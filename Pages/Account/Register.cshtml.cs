@@ -69,7 +69,10 @@ public class RegisterModel : PageModel
             }
             return Page();
         }
-        else return RedirectToPage("/Admin/Dashboard");
+        else
+        {
+            return RedirectToPage("/Admin/Dashboard");
+        }
     }
 
     public class RegisterFormModel

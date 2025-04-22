@@ -87,9 +87,9 @@ public class AttendanceService
         await _db.SaveChangesAsync();
     }
 
-    public async Task<double> CalculateWeeklyHoursAsync(Guid userId, DateTime? weekStart)
+    public async Task<TimeSpan[]> CalculateWeeklyHoursAsync(Guid userId, DateTime? weekStart)
     {
-        var startOfWeek = weekStart ?? DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+        var startOfWeek = weekStart ?? DateTime.Today.AddDays(-(double)DateTime.Today.DayOfWeek);
         var endOfWeek = startOfWeek.AddDays(7);
 
         var weeklyAttendances = await _db.Attendances
@@ -98,7 +98,8 @@ public class AttendanceService
 
         return weeklyAttendances
             .Where(a => a.CheckInTime.HasValue && a.CheckOutTime.HasValue)
-            .Sum(a => (a.CheckOutTime.Value - a.CheckInTime.Value).TotalHours);
+            .Select(a => (a.CheckOutTime.Value - a.CheckInTime.Value))
+            .ToArray();
     }
 
 }
