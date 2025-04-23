@@ -84,13 +84,13 @@ dotnet ef database update --environment Production
 - **Development**:
 
 ```bash
-dotnet watch # or run
+dotnet run --environment Development # or watch
 ```
 
 - **Production**:
 
 ```bash
-dotnet run --environment "Production"
+dotnet run --environment Production
 ```
 
 The application will be accessible at `http://localhost:5000` by default.
